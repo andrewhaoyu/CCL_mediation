@@ -87,6 +87,6 @@ if(treat_var_name=="Former"){
 
 fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator='sex_new', 
                     #outcome = c("censor_days_cancer_ignore", "case_control_cancer_ignore"),
-                    boot=T, boot.ci.type = "BCa")
+                    boot=T, boot.ci.type = "bca")
 result_list = list(med_model, out_model, fit_model)
 save(result_list, file = paste0("./result/mediation_result_",i1,".rdata"))
