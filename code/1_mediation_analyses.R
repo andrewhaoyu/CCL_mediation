@@ -1,4 +1,7 @@
+args = commandArgs(trailingOnly = T)
+i1 = as.numeric(args[[1]])
 #goal: mediation analyses for cll projects
+setwd("/data/zhangh24/CLL_mediation/")
 library(survival)
 library(mediation)
 library(data.table)
@@ -14,13 +17,76 @@ colnames(smoke_bin) = c("Former", "Current")
 data = cbind(data,smoke_bin)
 #load prs file
 prs = fread("./data/CLL_PRS_info/CLL_score.profile")
-data_com = left_join(data,prs, by = c("f.eid"="IID"))
 #finalized data: 434125 controls, 418 cases
+data_com = left_join(data,prs, by = c("f.eid"="IID"))
+#variable_list
+var_list = c("YRI_scale","ASN_scale","Former","Current","white_blood_cell_count",
+             "monocyte_percentage","neutrophil_percentage",
+             "autosome_mosaic")
+#binary variable uses logistic regression
+bin_var = c("Former","Current","autosome_mosaic")
+#continuous variable uses linear regression
+treat_var_name = var_list[i1]
+treat_var = data_com[,treat_var_name,drop=F]
+colnames(treat_var) = c("treat_var")
+data_clean = cbind(data_com,treat_var)
+#fit the mediator model
+if(treat_var_name%in%bin_var){
+  #separate different exiting covariates
+  if(treat_var_name=="Former"){
+    med_model = glm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Current, 
+                    data = data_clean,
+                    family = "binomial")
+  }else if(treat_var_name=="Current"){
+    med_model = glm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former, 
+                    data = data_clean,
+                    family = "binomial")
+  }else{
+    med_model = glm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+                    data = data_clean,
+                    family = "binomial")
+  }
+  
+}else{
+  #separate different exiting covariates
+  if(treat_var_name=="YRI_scale"){
+    med_model = lm(treat_var ~ SCORESUM + age + age2  + ASN_scale  + Former + Current, 
+                    data = data_clean)
+  }else if(treat_var_name=="ASN_scale"){
+    med_model = lm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+                    data = data_clean)
+  }else{
+    med_model = lm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+                    data = data_clean)
+  }
+}
 #fit the output model
-out_model = coxph(Surv(censor_days_cancer_ignore, case_control_cancer_ignore) ~ 
-                    SCORESUM + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, data = data_com)
-med_model = glm(sex_new ~ SCORESUM + age + age2 + YRI_scale + ASN_scale + Former + Current, data = data_com,
-                family = "binomial")
+if(treat_var_name=="Former"){
+  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+  
+}else if(treat_var_name=="Current"){
+  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+}else if(treat_var_name=="YRI_scale"){
+  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + ASN_scale + Former + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+}else if(treat_var_name=="ASN_scale"){
+  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + YRI_scale + Former + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+}else{
+  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+  
+}
+
 fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator='sex_new', 
-                    outcome = c("censor_days_cancer_ignore", "case_control_cancer_ignore"),
-                    boot=F, data = data_com)
+                    #outcome = c("censor_days_cancer_ignore", "case_control_cancer_ignore"),
+                    boot=T, boot.ci.type = "BCa")
+result_list = list(med_model, out_model, fit_model)
+save(result_list, file = paste0("./result/mediation_result_",i1,".rdata"))
