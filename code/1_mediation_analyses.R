@@ -26,25 +26,25 @@ var_list = c("YRI_scale","ASN_scale","Former","Current","white_blood_cell_count"
 #binary variable uses logistic regression
 bin_var = c("Former","Current","autosome_mosaic")
 #continuous variable uses linear regression
-treat_var_name = var_list[i1]
-treat_var = data_com[,treat_var_name,drop=F]
-colnames(treat_var) = c("treat_var")
-data_clean = cbind(data_com,treat_var)
+med_var_name = var_list[i1]
+med_var = data_com[,med_var_name,drop=F]
+colnames(med_var) = c("med_var")
+data_clean = cbind(data_com,med_var)
 #fit the total_effect model
-if(treat_var_name=="Former"){
+if(med_var_name=="Former"){
   total_model = glm(case_control_cancer_ignore~ SCORESUM  + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
   
-}else if(treat_var_name=="Current"){
+}else if(med_var_name=="Current"){
   total_model = glm(case_control_cancer_ignore~SCORESUM + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
                   data = data_clean,
                   family = "binomial")
-}else if(treat_var_name=="YRI_scale"){
+}else if(med_var_name=="YRI_scale"){
   total_model = glm(case_control_cancer_ignore~SCORESUM  + age + age2 + ASN_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
-}else if(treat_var_name=="ASN_scale"){
+}else if(med_var_name=="ASN_scale"){
   total_model = glm(case_control_cancer_ignore~SCORESUM  + age + age2 + YRI_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
@@ -56,61 +56,61 @@ if(treat_var_name=="Former"){
 }
 
 #fit the mediator model
-if(treat_var_name%in%bin_var){
+if(med_var_name%in%bin_var){
   #separate different exiting covariates
-  if(treat_var_name=="Former"){
-    med_model = glm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Current, 
+  if(med_var_name=="Former"){
+    med_model = glm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Current, 
                     data = data_clean,
                     family = "binomial")
-  }else if(treat_var_name=="Current"){
-    med_model = glm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former, 
+  }else if(med_var_name=="Current"){
+    med_model = glm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former, 
                     data = data_clean,
                     family = "binomial")
   }else{
-    med_model = glm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+    med_model = glm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
                     data = data_clean,
                     family = "binomial")
   }
   
 }else{
   #separate different exiting covariates
-  if(treat_var_name=="YRI_scale"){
-    med_model = lm(treat_var ~ SCORESUM + age + age2  + ASN_scale  + Former + Current, 
+  if(med_var_name=="YRI_scale"){
+    med_model = lm(med_var ~ SCORESUM + age + age2  + ASN_scale  + Former + Current, 
                     data = data_clean)
-  }else if(treat_var_name=="ASN_scale"){
-    med_model = lm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+  }else if(med_var_name=="ASN_scale"){
+    med_model = lm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
                     data = data_clean)
   }else{
-    med_model = lm(treat_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+    med_model = lm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
                     data = data_clean)
   }
 }
 #fit the output model
-if(treat_var_name=="Former"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
+if(med_var_name=="Former"){
+  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
   
-}else if(treat_var_name=="Current"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
+}else if(med_var_name=="Current"){
+  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
                   data = data_clean,
                   family = "binomial")
-}else if(treat_var_name=="YRI_scale"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + ASN_scale + Former + Current + sex_new, 
+}else if(med_var_name=="YRI_scale"){
+  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + ASN_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
-}else if(treat_var_name=="ASN_scale"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + YRI_scale + Former + Current + sex_new, 
+}else if(med_var_name=="ASN_scale"){
+  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + YRI_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
 }else{
-  out_model = glm(case_control_cancer_ignore~SCORESUM + treat_var + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
   
 }
 
-fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator= "treat_var", 
+fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator= "med_var", 
                     #outcome = c("censor_days_cancer_ignore", "case_control_cancer_ignore"),
                     boot=T, boot.ci.type = "bca")
 result_list = list(med_model, out_model, fit_model,total_model)
