@@ -30,6 +30,31 @@ treat_var_name = var_list[i1]
 treat_var = data_com[,treat_var_name,drop=F]
 colnames(treat_var) = c("treat_var")
 data_clean = cbind(data_com,treat_var)
+#fit the total_effect model
+if(treat_var_name=="Former"){
+  total_model = glm(case_control_cancer_ignore~ SCORESUM  + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+  
+}else if(treat_var_name=="Current"){
+  total_model = glm(case_control_cancer_ignore~SCORESUM + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+}else if(treat_var_name=="YRI_scale"){
+  total_model = glm(case_control_cancer_ignore~SCORESUM  + age + age2 + ASN_scale + Former + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+}else if(treat_var_name=="ASN_scale"){
+  total_model = glm(case_control_cancer_ignore~SCORESUM  + age + age2 + YRI_scale + Former + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+}else{
+  total_model = glm(case_control_cancer_ignore~SCORESUM  + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+  
+}
+
 #fit the mediator model
 if(treat_var_name%in%bin_var){
   #separate different exiting covariates
@@ -85,8 +110,8 @@ if(treat_var_name=="Former"){
   
 }
 
-fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator='sex_new', 
+fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator=treat_var_name, 
                     #outcome = c("censor_days_cancer_ignore", "case_control_cancer_ignore"),
                     boot=T, boot.ci.type = "bca")
-result_list = list(med_model, out_model, fit_model)
+result_list = list(med_model, out_model, fit_model,total_model)
 save(result_list, file = paste0("./result/mediation_result_",i1,".rdata"))
