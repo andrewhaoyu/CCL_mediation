@@ -110,7 +110,7 @@ if(treat_var_name=="Former"){
   
 }
 
-fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator=treat_var_name, 
+fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator= "treat_var", 
                     #outcome = c("censor_days_cancer_ignore", "case_control_cancer_ignore"),
                     boot=T, boot.ci.type = "bca")
 result_list = list(med_model, out_model, fit_model,total_model)
