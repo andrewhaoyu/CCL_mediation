@@ -8,6 +8,15 @@ load(paste0("./result/mediation_result_",i1,".rdata"))
 fit_model = result_list[[3]]
 out_model = result_list[[2]]
 med_model = result_list[[1]]
+total_model = result_list[[4]]
+
 summary(fit_model)
+#out model Y ~ M + X + C
 summary(out_model)
+#med model M ~ X + C
 summary(med_model)
+#total model Y ~  X + C
+summary(total_model)
+
+
+pnorm(sqrt(2.7/2))

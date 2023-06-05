@@ -1,0 +1,67 @@
+---
+title: "Mediation_analysis_question"
+output:
+  pdf_document: default
+  html_document: default
+date: '2023-04-15'
+---
+## Continous outcome and continous mediator
+Results for continuous outcome and continuous mediator look all right. 
+```{r cars}
+n = 1000
+#C is the covariate
+C = rnorm(n)
+#X is the treatment variable
+X = rnorm(n, mean = 0, sd = 1)
+#M is the mediator
+M = 0.3*X + 0.5* C  + rnorm(n)
+#Y is the outcome
+Y = M*0.2+0.1*X + 0.3* C 
+data = data.frame(Y, X, M, C)
+#direct effect is 0.1
+#indirect effect is 0.06
+#total effect is 0.16
+out_model = lm(Y ~ X + M + C, data = data)
+med_model = lm(M~X + C, data = data)
+total_model = lm(Y ~ X + C, data = data)
+summary(out_model)
+summary(med_model)
+summary(total_model)
+library(mediation)
+fit_model = mediate(med_model, out_model, treat="X", mediator= "M", boot=T, boot.ci.type = "bca")
+#result from mediation package looks right
+summary(fit_model)
+
+```
+
+## Binary outcome and continous mediator
+Results for binary outcome and continuous mediator are not on the right magnitude. The estimated total effect is only 0.01 where the true total effect is 0.16.
+
+```{r pressure, echo=T}
+n = 1000
+#C is the covariate
+C = rnorm(n)
+#X is the treatment variable
+X = rnorm(n, mean = 0, sd = 1)
+#M is the mediator
+M = 0.3*X + 0.5* C  + rnorm(n)
+score = -3+M*0.2+0.1*X + 0.3* C 
+P = exp(score)/(1+exp(score))
+#Y is the outcome
+Y = rbinom(P,size = 1,prob = P)
+sum(Y)
+#direct effect is 0.1
+#indirect effect is 0.06
+#total effect is 0.16
+data = data.frame(Y, X, M, C)
+out_model = glm(Y ~ X + M + C, data = data, family = binomial(link = 'logit'))
+med_model = lm(M~X + C, data = data)
+total_model = glm(Y ~ X + C, data = data, family = binomial(link = 'logit'))
+summary(out_model)
+summary(med_model)
+summary(total_model)
+library(mediation)
+fit_model = mediate(med_model, out_model, treat="X", mediator= "M", boot=T, boot.ci.type = "bca")
+#result from mediation package is not on the right magnitude.
+summary(fit_model)
+```

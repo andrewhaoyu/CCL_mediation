@@ -19,6 +19,10 @@ data = cbind(data,smoke_bin)
 prs = fread("./data/CLL_PRS_info/CLL_score.profile")
 #finalized data: 434125 controls, 418 cases
 data_com = left_join(data,prs, by = c("f.eid"="IID"))
+data_com_control = data_com[data_com$case_control_cancer_control==0,]
+mean_prs = mean(data_com_control$SCORESUM,na.rm = T)
+se_prs = sd(data_com_control$SCORESUM,na.rm = T)
+data_com$SCORESUM_sd = (data_com$SCORESUM-mean_prs)/se_prs
 #variable_list
 var_list = c("YRI_scale","ASN_scale","Former","Current","white_blood_cell_count",
              "monocyte_percentage","neutrophil_percentage",
@@ -32,24 +36,24 @@ colnames(med_var) = c("med_var")
 data_clean = cbind(data_com,med_var)
 #fit the total_effect model
 if(med_var_name=="Former"){
-  total_model = glm(case_control_cancer_ignore~ SCORESUM  + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
+  total_model = glm(case_control_cancer_ignore~ SCORESUM_sd  + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
   
 }else if(med_var_name=="Current"){
-  total_model = glm(case_control_cancer_ignore~SCORESUM + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
+  total_model = glm(case_control_cancer_ignore~SCORESUM_sd + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
                   data = data_clean,
                   family = "binomial")
 }else if(med_var_name=="YRI_scale"){
-  total_model = glm(case_control_cancer_ignore~SCORESUM  + age + age2 + ASN_scale + Former + Current + sex_new, 
+  total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + ASN_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
 }else if(med_var_name=="ASN_scale"){
-  total_model = glm(case_control_cancer_ignore~SCORESUM  + age + age2 + YRI_scale + Former + Current + sex_new, 
+  total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + YRI_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
 }else{
-  total_model = glm(case_control_cancer_ignore~SCORESUM  + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
+  total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
   
@@ -59,15 +63,15 @@ if(med_var_name=="Former"){
 if(med_var_name%in%bin_var){
   #separate different exiting covariates
   if(med_var_name=="Former"){
-    med_model = glm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Current, 
+    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Current, 
                     data = data_clean,
                     family = "binomial")
   }else if(med_var_name=="Current"){
-    med_model = glm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former, 
+    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former, 
                     data = data_clean,
                     family = "binomial")
   }else{
-    med_model = glm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
                     data = data_clean,
                     family = "binomial")
   }
@@ -75,43 +79,82 @@ if(med_var_name%in%bin_var){
 }else{
   #separate different exiting covariates
   if(med_var_name=="YRI_scale"){
-    med_model = lm(med_var ~ SCORESUM + age + age2  + ASN_scale  + Former + Current, 
+    med_model = lm(med_var ~ SCORESUM_sd + age + age2  + ASN_scale  + Former + Current, 
                     data = data_clean)
   }else if(med_var_name=="ASN_scale"){
-    med_model = lm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+    med_model = lm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
                     data = data_clean)
   }else{
-    med_model = lm(med_var ~ SCORESUM + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+    med_model = lm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
                     data = data_clean)
   }
 }
 #fit the output model
 if(med_var_name=="Former"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
   
 }else if(med_var_name=="Current"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
                   data = data_clean,
                   family = "binomial")
 }else if(med_var_name=="YRI_scale"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + ASN_scale + Former + Current + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + ASN_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
 }else if(med_var_name=="ASN_scale"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + YRI_scale + Former + Current + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
 }else{
-  out_model = glm(case_control_cancer_ignore~SCORESUM + med_var + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
                   data = data_clean,
                   family = "binomial")
   
 }
 
-fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator= "med_var", 
-                    #outcome = c("censor_days_cancer_ignore", "case_control_cancer_ignore"),
-                    boot=T, boot.ci.type = "bca")
-result_list = list(med_model, out_model, fit_model,total_model)
-save(result_list, file = paste0("./result/mediation_result_",i1,".rdata"))
+Mediation = function(out_model, med_model, total_model){
+  out_coef = coefficients(summary(out_model))
+  log_NDE = out_coef[2,1]
+  log_NDE_se = out_coef[2,2]
+  NDE_p = out_coef[2,2]
+  OR_NDE = exp(log_NDE)
+  OR_NDE_low = exp(log_NDE-1.96*log_NDE_se)
+  OR_NDE_high = exp(log_NDE+1.96*log_NDE_se)
+  med_coef = coefficients(summary(med_model))
+  log_NIE = out_coef[3,1]*med_coef[2,1]
+  log_NIE_se = sqrt(out_coef[3,1]^2*med_coef[2,2]^2+
+                      med_coef[2,1]^2*out_coef[3,2]^2)
+  NIE_p = 2*pnorm(-abs(log_NIE/log_NDE_se), lower.tail = T)
+  OR_NIE = exp(log_NIE)
+  OR_NIE_low = exp(log_NIE-1.96*log_NIE_se)
+  OR_NIE_high = exp(log_NIE+1.96*log_NIE_se)
+  total_coef = coefficients(summary(total_model))
+  log_TDE = total_coef[2,1]
+  log_TDE_se = total_coef[2,2]
+  TDE_p = total_coef[2,2]
+  OR_TDE = exp(log_TDE)
+  OR_TDE_low = exp(log_TDE-1.96*log_TDE_se)
+  OR_TDE_high = exp(log_TDE+1.96*log_TDE_se)
+  OR_TDE = exp(log_TDE)
+  proportion = log_NIE/log_TDE
+  
+  result = data.frame(OR_NDE,OR_NDE_low,OR_NDE_high,NDE_p,
+             OR_NIE,OR_NIE_low,OR_NIE_high,NIE_p,
+             OR_TDE,OR_TDE_low,OR_TDE,TDE_p,proportion)
+  
+  return(result)
+  
+  
+}
+result = Mediation(out_model,med_model,
+                   total_model)
+
+
+# fit_model = mediate(med_model, out_model, treat='SCORESUM', mediator= "med_var", 
+#                     #outcome = c("censor_days_cancer_ignore", "case_control_cancer_ignore"),
+#                     boot=T, boot.ci.type = "bca")
+#result_list = list(med_model, out_model, fit_model,total_model)
+#save(result_list, file = paste0("./result/mediation_result_",i1,".rdata"))
+save(result, file = paste0("./result/mediation_result_delta_",i1,".rdata"))
