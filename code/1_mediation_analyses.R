@@ -142,7 +142,7 @@ Mediation = function(out_model, med_model, total_model){
   
   result = data.frame(OR_NDE,OR_NDE_low,OR_NDE_high,NDE_p,
              OR_NIE,OR_NIE_low,OR_NIE_high,NIE_p,
-             OR_TDE,OR_TDE_low,OR_TDE,TDE_p,proportion)
+             OR_TDE,OR_TDE_low,OR_TDE_high,TDE_p,proportion)
   
   return(result)
   
