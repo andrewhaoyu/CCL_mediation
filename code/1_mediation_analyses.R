@@ -138,7 +138,7 @@ Mediation = function(out_model, med_model, total_model){
   log_NIE = out_coef[3,1]*med_coef[2,1]
   log_NIE_se = sqrt(out_coef[3,1]^2*med_coef[2,2]^2+
                       med_coef[2,1]^2*out_coef[3,2]^2)
-  NIE_p = 2*pnorm(-abs(log_NIE/log_NDE_se), lower.tail = T)
+  NIE_p = 2*pnorm(-abs(log_NIE/log_NIE_se), lower.tail = T)
   OR_NIE = exp(log_NIE)
   OR_NIE_low = exp(log_NIE-1.96*log_NIE_se)
   OR_NIE_high = exp(log_NIE+1.96*log_NIE_se)
