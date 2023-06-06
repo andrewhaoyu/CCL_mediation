@@ -36,24 +36,28 @@ colnames(med_var) = c("med_var")
 data_clean = cbind(data_com,med_var)
 #fit the total_effect model
 if(med_var_name=="Former"){
-  total_model = glm(case_control_cancer_ignore~ SCORESUM_sd  + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
+  total_model = glm(case_control_cancer_ignore~ SCORESUM_sd  + age + age2 + YRI_scale + ASN_scale + Current + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
   
 }else if(med_var_name=="Current"){
-  total_model = glm(case_control_cancer_ignore~SCORESUM_sd + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
+  total_model = glm(case_control_cancer_ignore~SCORESUM_sd + age + age2 + YRI_scale + ASN_scale + Former + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
 }else if(med_var_name=="YRI_scale"){
-  total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + ASN_scale + Former + Current + sex_new, 
+  total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + ASN_scale + Former + Current + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
 }else if(med_var_name=="ASN_scale"){
-  total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + YRI_scale + Former + Current + sex_new, 
+  total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + YRI_scale + Former + Current + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
-}else{
+}else if(med_var_name=="white_blood_cell_count"){
   total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
+                    data = data_clean,
+                    family = "binomial")
+}else{
+  total_model = glm(case_control_cancer_ignore~SCORESUM_sd  + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
   
@@ -63,15 +67,15 @@ if(med_var_name=="Former"){
 if(med_var_name%in%bin_var){
   #separate different exiting covariates
   if(med_var_name=="Former"){
-    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Current, 
+    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Current + white_blood_cell_count, 
                     data = data_clean,
                     family = "binomial")
   }else if(med_var_name=="Current"){
-    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former, 
+    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + white_blood_cell_count, 
                     data = data_clean,
                     family = "binomial")
   }else{
-    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+    med_model = glm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current + white_blood_cell_count, 
                     data = data_clean,
                     family = "binomial")
   }
@@ -79,36 +83,44 @@ if(med_var_name%in%bin_var){
 }else{
   #separate different exiting covariates
   if(med_var_name=="YRI_scale"){
-    med_model = lm(med_var ~ SCORESUM_sd + age + age2  + ASN_scale  + Former + Current, 
+    med_model = lm(med_var ~ SCORESUM_sd + age + age2  + ASN_scale  + Former + Current + white_blood_cell_count, 
                     data = data_clean)
   }else if(med_var_name=="ASN_scale"){
-    med_model = lm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+    med_model = lm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current + white_blood_cell_count, 
                     data = data_clean)
+  }else if(med_var_name=="white_blood_cell_count"){
+    med_model = lm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current , 
+                   data = data_clean)
   }else{
-    med_model = lm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current, 
+    med_model = lm(med_var ~ SCORESUM_sd + age + age2 + YRI_scale + ASN_scale  + Former + Current + white_blood_cell_count, 
                     data = data_clean)
   }
 }
 #fit the output model
 if(med_var_name=="Former"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Current + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Current + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
   
 }else if(med_var_name=="Current"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Former + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Former + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
 }else if(med_var_name=="YRI_scale"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + ASN_scale + Former + Current + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + ASN_scale + Former + Current + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
 }else if(med_var_name=="ASN_scale"){
-  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + Former + Current + sex_new, 
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + Former + Current + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
-}else{
+}else if(med_var_name=="white_blood_cell_count"){
   out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new, 
+                  data = data_clean,
+                  family = "binomial")
+  
+}else{
+  out_model = glm(case_control_cancer_ignore~SCORESUM_sd + med_var + age + age2 + YRI_scale + ASN_scale + Former + Current + sex_new + white_blood_cell_count, 
                   data = data_clean,
                   family = "binomial")
   
@@ -131,9 +143,9 @@ Mediation = function(out_model, med_model, total_model){
   OR_NIE_low = exp(log_NIE-1.96*log_NIE_se)
   OR_NIE_high = exp(log_NIE+1.96*log_NIE_se)
   total_coef = coefficients(summary(total_model))
-  log_TDE = total_coef[2,1]
-  log_TDE_se = total_coef[2,2]
-  TDE_p = total_coef[2,4]
+  log_TDE = log_NDE + log_NIE
+  log_TDE_se = sqrt(log_NIE_se^2+log_NDE_se^2)
+  TDE_p = 2*pnorm(-abs(log_TDE/log_TDE_se), lower.tail = T)
   OR_TDE = exp(log_TDE)
   OR_TDE_low = exp(log_TDE-1.96*log_TDE_se)
   OR_TDE_high = exp(log_TDE+1.96*log_TDE_se)
