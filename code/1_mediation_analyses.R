@@ -143,18 +143,18 @@ Mediation = function(out_model, med_model, total_model){
   OR_NIE_low = exp(log_NIE-1.96*log_NIE_se)
   OR_NIE_high = exp(log_NIE+1.96*log_NIE_se)
   total_coef = coefficients(summary(total_model))
-  log_TDE = log_NDE + log_NIE
-  log_TDE_se = sqrt(log_NIE_se^2+log_NIE_se^2)
-  TDE_p = 2*pnorm(-abs(log_TDE/log_TDE_se), lower.tail = T)
-  OR_TDE = exp(log_TDE)
-  OR_TDE_low = exp(log_TDE-1.96*log_TDE_se)
-  OR_TDE_high = exp(log_TDE+1.96*log_TDE_se)
-  OR_TDE = exp(log_TDE)
-  proportion = log_NIE/log_TDE
+  log_TE = log_NDE + log_NIE
+  log_TE_se = sqrt(log_NDE_se^2+log_NIE_se^2)
+  TE_p = 2*pnorm(-abs(log_TE/log_TE_se), lower.tail = T)
+  OR_TE = exp(log_TE)
+  OR_TE_low = exp(log_TE-1.96*log_TE_se)
+  OR_TE_high = exp(log_TE+1.96*log_TE_se)
+  OR_TE = exp(log_TE)
+  proportion = log_NIE/log_TE
   
   result = data.frame(OR_NDE,OR_NDE_low,OR_NDE_high,NDE_p,
              OR_NIE,OR_NIE_low,OR_NIE_high,NIE_p,
-             OR_TDE,OR_TDE_low,OR_TDE_high,TDE_p,proportion)
+             OR_TE,OR_TE_low,OR_TE_high,TE_p,proportion)
   
   return(result)
   
