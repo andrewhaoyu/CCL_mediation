@@ -42,9 +42,11 @@ colnames(final_result1) = colnames(final_result2) =
   colnames(final_result3) = result_names
 
 # Assuming df1 and df2 are your data frames
-write_xlsx(list("Sheet1Name" = df1, "Sheet2Name" = df2), path = "your_file_name.xlsx")
+write_xlsx(list("PRS" = final_result1, "PRS1" = final_result2,
+                "PRS2" = final_result3), path = "./result/mediation_result_060923.xlsx")
 
-write.csv(final_result, file = "./result/mediation_result_060523.csv")
+
+# write.csv(final_result, file = "./result/mediation_result_060523.csv")
 # library(mediation)
 # i1 = 6
 # load(paste0("./result/mediation_result_",i1,".rdata"))
