@@ -117,6 +117,47 @@ for(i in 1:1000){
   M = rbinom(n,1,P_M)
   P = probit(theta_1*A + theta_2*M + theta_c*C )
   Y = rbinom(n,1,P)
+  regmedint_obj1 <- regmedint(data = vv2015,
+                            ## Variables
+                            yvar = "y",
+                            avar = "x",
+                            mvar = "m",
+                            cvar = c("c"),
+                            eventvar = "event",
+                            ## Values at which effects are evaluated
+                            a0 = 0,
+                            a1 = 1,
+                            m_cde = 1,
+                            c_cond = 3,
+                            ## Model types
+                            mreg = "logistic",
+                            yreg = "survAFT_weibull",
+                            ## Additional specification
+                            interaction = TRUE,
+                            casecontrol = FALSE)
+
+summary(regmedint_obj1)
+  data = data.frame(Y = Y, M = M, A = A, C = C)
+  regmedint_obj1 <- regmedint(data = data,
+                              ## Variables
+                              yvar = "Y",
+                              avar = "A",
+                              mvar = "M",
+                              cvar = c("C"),
+                              eventvar = NULL,
+                              ## Values at which effects are evaluated
+                              a0 = 0,
+                              a1 = 1,
+                              m_cde = 1,
+                              c_cond = 3,
+                              ## Model types
+                              mreg = "logistic",
+                              yreg = "logistic",
+                              ## Additional specification
+                              interaction = FALSE,
+                              casecontrol = FALSE)
+  
+  summary(regmedint_obj1)
   med_model = glm( M ~ A + C, family = binomial())
   out_model = glm(Y ~ A + M + C, family = binomial())
   results = MediationBB(out_model,med_model, A0 = 0, A1 = 1,C = c(0), M = NULL, Interaction = NULL)  
@@ -145,7 +186,6 @@ sum(final_result$OR_TE_low <= OR_TE & final_result$OR_TE_high >= OR_TE )/1000
 
 mean(test_result$SE_logOR_NIE)
 sd(log(final_result$OR_NIE))
-
 
 
 

@@ -2,12 +2,14 @@ args = commandArgs(trailingOnly = T)
 i1 = as.numeric(args[[1]])
 #goal: mediation analyses for cll projects
 setwd("/data/zhangh24/CLL_mediation/")
+source("./code/MedFun.R")
 library(survival)
 library(mediation)
 library(data.table)
 library(dplyr)
 #load data with 436784 subjects
-data = readRDS("./data/mediation_prscomp_chip.rds")
+data = readRDS("./data/mediation1.rds")
+#data = readRDS("./data/mediation_prscomp_chip.rds")
 #436361 controls, 423 cases
 #remove 2241 subjects (2236 controls, 5 cases) with missing smoking status
 data = data %>% filter(smoke_NFC!=9)
@@ -139,6 +141,40 @@ if(med_var_name%in%bin_var){
 }
 
 
+Mediation = function(out_model, med_model){
+  out_coef = coefficients(summary(out_model))
+  log_NDE = out_coef[2,1]
+  log_NDE_se = out_coef[2,2]
+  NDE_p = out_coef[2,4]
+  OR_NDE = exp(log_NDE)
+  OR_NDE_low = exp(log_NDE-1.96*log_NDE_se)
+  OR_NDE_high = exp(log_NDE+1.96*log_NDE_se)
+  med_coef = coefficients(summary(med_model))
+  log_NIE = out_coef[3,1]*med_coef[2,1]
+  log_NIE_se = sqrt(out_coef[3,1]^2*med_coef[2,2]^2+
+                      med_coef[2,1]^2*out_coef[3,2]^2)
+  NIE_p = 2*pnorm(-abs(log_NIE/log_NIE_se), lower.tail = T)
+  OR_NIE = exp(log_NIE)
+  OR_NIE_low = exp(log_NIE-1.96*log_NIE_se)
+  OR_NIE_high = exp(log_NIE+1.96*log_NIE_se)
+  total_coef = coefficients(summary(total_model))
+  log_TE = log_NDE + log_NIE
+  log_TE_se = sqrt(log_NDE_se^2+log_NIE_se^2)
+  TE_p = 2*pnorm(-abs(log_TE/log_TE_se), lower.tail = T)
+  OR_TE = exp(log_TE)
+  OR_TE_low = exp(log_TE-1.96*log_TE_se)
+  OR_TE_high = exp(log_TE+1.96*log_TE_se)
+  OR_TE = exp(log_TE)
+  proportion = log_NIE/log_TE
+  
+  result = data.frame(OR_NDE,OR_NDE_low,OR_NDE_high,NDE_p,
+                      OR_NIE,OR_NIE_low,OR_NIE_high,NIE_p,
+                      OR_TE,OR_TE_low,OR_TE_high,TE_p,proportion)
+  
+  return(result)
+  
+  
+}
 
 
 

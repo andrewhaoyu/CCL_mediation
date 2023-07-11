@@ -19,37 +19,6 @@ Probit = function(x){
 #The averaged total effect is defined as E(Y|M_{A1},A1) - E(Y|M_{A0},A0)
 #C here is the controlled value for other covariates.
 
-MediationBB_true = function(theta_0,theta_1,theta_2, beta_0, beta_1, beta_2,out_model, med_model , C ){
- 
-  theta_3 = 0
-  cov_theta <- vcov(out_model)
-  
-  
-  cov_beta <- vcov(med_model)
-  Sigma = bdiag(list(cov_beta,cov_theta))
-  A = Probit(theta_2+theta_3*A1+beta_0+beta_1*A1+crossprod(beta_2,C))
-  B = Probit(theta_2+theta_3*A1+beta_0+beta_1*A0+crossprod(beta_2,C))
-  K = Probit(beta_0+beta_1*A1+crossprod(beta_2,C))
-  D = Probit(beta_0+beta_1*A0+crossprod(beta_2,C))
-  b1 = (D+A)-(K+B)
-  b2 = A0*(D-B)+A1*(A-K)
-  b3 = (D+A-K-B)*C
-  b4 = 0
-  b5 = 0
-  b6 = as.numeric(A-B)
-  #b7 = A1*(as.numeric(A-B))
-  b8 = 0*C
-  #Gamma = c(b1,b2,b3,b4,b5,b6,b7,b8)
-  Gamma = c(b1,b2,b3,b4,b5,b6,b8)
-  SE_logOR_NIE = as.numeric(sqrt(t(Gamma)%*%Sigma%*%Gamma))
-  
-  return(list(SE_logOR_NIE))
-  
-  
-}
-
-
-
 
 MediationBB = function(out_model,med_model, A0, A1,C, M = NULL, Interaction = NULL){
   out_coef = coef(out_model)
