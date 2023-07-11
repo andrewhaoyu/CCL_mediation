@@ -5,7 +5,8 @@ i1 = as.numeric(args[[1]])
 setwd("/data/zhangh24/CLL_mediation/")
 source("./code/MedFun.R")
 library(survival)
-library(mediation)
+library(regmedint)
+#library(mediation)
 library(data.table)
 library(dplyr)
 #load data with 436784 subjects
@@ -61,7 +62,7 @@ data_clean = cbind(data_com_new,med_var)
 
 
 
-library(regmedint)
+
 #remove 13046 with missing white_blood_cell_count
 data_clean = data_clean %>% filter(!is.na(white_blood_cell_count))
 
