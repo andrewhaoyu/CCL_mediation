@@ -74,7 +74,7 @@ if(med_var_name%in%bin_var){
     C = c(mean(data_clean$age), mean(data_clean$age2), mean(data_clean$YRI_scale),  
           mean(data_clean$ASN_scale), 0, 0, mean(data_clean$white_blood_cell_count,na.rm = T))
     
-    regmedint_obj1 <- regmedint(data = data_clean,
+    result <- regmedint(data = data_clean,
                                 ## Variables
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
@@ -99,7 +99,7 @@ if(med_var_name%in%bin_var){
     C = c(mean(data_clean$age), mean(data_clean$age2), mean(data_clean$YRI_scale),  
           mean(data_clean$ASN_scale), 0, 0, mean(data_clean$white_blood_cell_count,na.rm = T))
     
-    regmedint_obj1 <- regmedint(data = data_clean,
+    result <- regmedint(data = data_clean,
                                 ## Variables
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
@@ -121,7 +121,7 @@ if(med_var_name%in%bin_var){
   }else{
     C = c(mean(data_clean$age), mean(data_clean$age2), mean(data_clean$YRI_scale),  
           mean(data_clean$ASN_scale), 0, 0, 0, mean(data_clean$white_blood_cell_count,na.rm = T))
-    regmedint_obj1 <- regmedint(data = data_clean,
+    result <- regmedint(data = data_clean,
                                 ## Variables
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
@@ -147,7 +147,7 @@ if(med_var_name%in%bin_var){
     C = c(mean(data_clean$age), mean(data_clean$age2), 
           mean(data_clean$ASN_scale), 0, 0, 0, mean(data_clean$white_blood_cell_count,na.rm = T))
     
-    regmedint_obj1 <- regmedint(data = data_clean,
+    result <- regmedint(data = data_clean,
                                 ## Variables
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
@@ -171,7 +171,7 @@ if(med_var_name%in%bin_var){
     C = c(mean(data_clean$age), mean(data_clean$age2), mean(data_clean$YRI_scale),  
           0, 0, 0, mean(data_clean$white_blood_cell_count,na.rm = T))
     
-    regmedint_obj1 <- regmedint(data = data_clean,
+    result <- regmedint(data = data_clean,
                                 ## Variables
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
@@ -195,7 +195,7 @@ if(med_var_name%in%bin_var){
     C = c(mean(data_clean$age), mean(data_clean$age2), mean(data_clean$YRI_scale),  
           mean(data_clean$ASN_scale), 0, 0, 0,na.rm = T)
     
-    regmedint_obj1 <- regmedint(data = data_clean,
+    result <- regmedint(data = data_clean,
                                 ## Variables
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
@@ -219,7 +219,7 @@ if(med_var_name%in%bin_var){
     C = c(mean(data_clean$age), mean(data_clean$age2), mean(data_clean$YRI_scale),  
           mean(data_clean$ASN_scale), 0, 0, 0, mean(data_clean$white_blood_cell_count,na.rm = T))
     
-    regmedint_obj1 <- regmedint(data = data_clean,
+    result <- regmedint(data = data_clean,
                                 ## Variables
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
