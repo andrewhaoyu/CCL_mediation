@@ -1,6 +1,8 @@
 args = commandArgs(trailingOnly = T)
 #i1 for different variables
 i1 = as.numeric(args[[1]])
+#i2 for different prs
+i2 = as.numeric(args[[2]])
 #goal: mediation analyses for cll projects
 setwd("/data/zhangh24/CLL_mediation/")
 source("./code/MedFun.R")
