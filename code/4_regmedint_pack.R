@@ -1,4 +1,5 @@
 args = commandArgs(trailingOnly = T)
+#i1 for different variables
 i1 = as.numeric(args[[1]])
 #goal: mediation analyses for cll projects
 setwd("/data/zhangh24/CLL_mediation/")
@@ -20,13 +21,28 @@ colnames(smoke_bin) = c("Former", "Current")
 data = cbind(data,smoke_bin)
 #load prs file
 prs = fread("./data/CLL_PRS_info/CLL_score.profile")
-#finalized data: 434125 controls, 418 cases
-data_com = left_join(data,prs, by = c("f.eid"="IID"))
+#load subprs file
+prs2 = readRDS("./data/subPRS_updated.rds") %>% 
+  select(f.eid,prs1,prs2)
+
+prs_com = inner_join(prs2,prs, by = c("f.eid"="IID")) %>% 
+  rename(prs = SCORESUM)
+
+#combined data: 433362 controls, 313 cases
+data_com = inner_join(data,prs_com, by = c("f.eid"="f.eid"))
+#assign different PRS
+if(i2 == 1){
+  data_com$SCORESUM = data_com$prs
+}else if(i2 ==2){
+  data_com$SCORESUM = data_com$prs1
+}else{
+  data_com$SCORESUM = data_com$prs2
+}
 data_com_control = data_com[data_com$case_control_cancer_control==0,]
 mean_prs = mean(data_com_control$SCORESUM,na.rm = T)
 se_prs = sd(data_com_control$SCORESUM,na.rm = T)
 data_com$SCORESUM_sd = (data_com$SCORESUM-mean_prs)/se_prs
-#remove 868 people with missing PRS
+#remove anyone people with missing PRS
 data_com_new = data_com %>% filter(!is.na(data_com$SCORESUM))
 
 #variable_list
