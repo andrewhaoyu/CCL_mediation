@@ -126,7 +126,7 @@ if(med_var_name%in%bin_var){
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
                                 mvar = "med_var",
-                                cvar = c("age", "age2","YRI_scale", "ASN_scale","Former",
+                                cvar = c("age", "age2","YRI_scale", "ASN_scale","Former","Current",
                                          "sex_new", "white_blood_cell_count"),
                                 eventvar = "case_control_cancer_ignore",
                                 ## Values at which effects are evaluated
@@ -152,7 +152,7 @@ if(med_var_name%in%bin_var){
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
                                 mvar = "med_var",
-                                cvar = c("age", "age2", "ASN_scale","Former",
+                                cvar = c("age", "age2", "ASN_scale","Former","Current",
                                          "sex_new", "white_blood_cell_count"),
                                 eventvar = "case_control_cancer_ignore",
                                 ## Values at which effects are evaluated
@@ -176,7 +176,7 @@ if(med_var_name%in%bin_var){
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
                                 mvar = "med_var",
-                                cvar = c("age", "age2", "ASN_scale","Former",
+                                cvar = c("age", "age2","YRI_scale","Former","Current",
                                          "sex_new", "white_blood_cell_count"),
                                 eventvar = "case_control_cancer_ignore",
                                 ## Values at which effects are evaluated
@@ -200,7 +200,7 @@ if(med_var_name%in%bin_var){
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
                                 mvar = "med_var",
-                                cvar = c("age", "age2", "ASN_scale","Former",
+                                cvar = c("age", "age2","YRI_scale", "ASN_scale","Former","Current",
                                          "sex_new"),
                                 eventvar = "case_control_cancer_ignore",
                                 ## Values at which effects are evaluated
@@ -224,8 +224,8 @@ if(med_var_name%in%bin_var){
                                 yvar = "y",
                                 avar = "SCORESUM_sd",
                                 mvar = "med_var",
-                                cvar = c("age", "age2", "ASN_scale","Former",
-                                         "sex_new"),
+                                cvar = c("age", "age2","YRI_scale", "ASN_scale","Former","Current",
+                                         "sex_new", "white_blood_cell_count"),
                                 eventvar = "case_control_cancer_ignore",
                                 ## Values at which effects are evaluated
                                 a0 = 0,
