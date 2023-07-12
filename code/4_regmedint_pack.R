@@ -187,7 +187,7 @@ if(med_var_name%in%bin_var){
     
   }else if(med_var_name=="white_blood_cell_count"){
     C = c(mean(data_clean$age), mean(data_clean$age2), mean(data_clean$YRI_scale),  
-          mean(data_clean$ASN_scale), 0, 0, 0,na.rm = T)
+          mean(data_clean$ASN_scale), 0, 0, 0)
     
     result <- regmedint(data = data_clean,
                                 ## Variables

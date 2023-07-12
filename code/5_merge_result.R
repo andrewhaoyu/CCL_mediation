@@ -34,20 +34,21 @@ SummarizeResult = function(result){
   return(result)
 }
 result_list = list()
+i2 = 1
 for(i1 in 1:length(var_list)){
-  load(paste0("./result/mediation_result_delta_",i1,".rdata"))
+  load(paste0("./result/mediation_result_delta_",i1,"_",i2,".rdata"))
  
   
 }
 final_result1 = cbind(var_list,rbindlist(result_list))
-i2 = 1
+i2 = 2
 for(i1 in 1:length(var_list)){
   load(paste0("./result/mediation_result_sub_",i1,"_",i2,".rdata"))
   result_list[[i1]] = result
 }
 final_result2 = cbind(var_list,rbindlist(result_list))
 
-i2 = 2
+i2 = 3
 for(i1 in 1:length(var_list)){
   load(paste0("./result/mediation_result_sub_",i1,"_",i2,".rdata"))
   result_list[[i1]] = result
