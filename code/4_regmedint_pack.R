@@ -237,7 +237,7 @@ if(med_var_name%in%bin_var){
   
 }
 
-save(result, file = paste0("./result/mediation_result_delta_",i1,".rdata"))
+save(result, file = paste0("./result/mediation_result_delta_",i1,"_",i2,".rdata"))
 #data_new = readRDS("./data/mediation_prscomp_chip.rds")
 
 
