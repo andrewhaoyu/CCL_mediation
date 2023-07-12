@@ -24,18 +24,11 @@ colnames(smoke_bin) = c("Former", "Current")
 data = cbind(data,smoke_bin)
 #load prs file
 prs = fread("./data/CLL_PRS_info/CLL_score.profile")
-#load subprs file
-prs2 = readRDS("./data/subPRS_updated.rds") %>% 
-  select(f.eid,prs1,prs2)
-
-prs_com = inner_join(prs2,prs, by = c("f.eid"="IID")) %>% 
-  rename(prs = SCORESUM)
-
-#combined data: 433362 controls, 313 cases
-data_com = inner_join(data,prs_com, by = c("f.eid"="f.eid"))
+#combined data: 433257 controls, 418 cases
+data_com = inner_join(data,prs, by = c("f.eid"="IID"))
 #assign different PRS
 if(i2 == 1){
-  data_com$SCORESUM = data_com$prs
+  data_com$SCORESUM = data_com$SCORESUM
 }else if(i2 ==2){
   data_com$SCORESUM = data_com$prs1
 }else{
@@ -46,6 +39,7 @@ mean_prs = mean(data_com_control$SCORESUM,na.rm = T)
 se_prs = sd(data_com_control$SCORESUM,na.rm = T)
 data_com$SCORESUM_sd = (data_com$SCORESUM-mean_prs)/se_prs
 #remove anyone people with missing PRS
+#finalized dataset: 433362 controls, 313 cases
 data_com_new = data_com %>% filter(!is.na(data_com$SCORESUM))
 
 #variable_list
