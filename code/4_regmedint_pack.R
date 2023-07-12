@@ -26,7 +26,7 @@ data = cbind(data,smoke_bin)
 prs = fread("./data/CLL_PRS_info/CLL_score.profile")
 #combined data: 433257 controls, 418 cases
 data_com = inner_join(data,prs, by = c("f.eid"="IID"))
-table(data_com_new$case_control_cancer_ignore)
+table(data_com$case_control_cancer_ignore)
 #assign different PRS
 if(i2 == 1){
   data_com$SCORESUM = data_com$SCORESUM
