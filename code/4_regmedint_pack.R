@@ -26,6 +26,7 @@ data = cbind(data,smoke_bin)
 prs = fread("./data/CLL_PRS_info/CLL_score.profile")
 #combined data: 433257 controls, 418 cases
 data_com = inner_join(data,prs, by = c("f.eid"="IID"))
+table(data_com_new$case_control_cancer_ignore)
 #assign different PRS
 if(i2 == 1){
   data_com$SCORESUM = data_com$SCORESUM
@@ -39,9 +40,9 @@ mean_prs = mean(data_com_control$SCORESUM,na.rm = T)
 se_prs = sd(data_com_control$SCORESUM,na.rm = T)
 data_com$SCORESUM_sd = (data_com$SCORESUM-mean_prs)/se_prs
 #remove anyone people with missing PRS
-#finalized dataset: 433362 controls, 313 cases
+#dataset: 433257 controls, 418 cases
 data_com_new = data_com %>% filter(!is.na(data_com$SCORESUM))
-
+table(data_com_new$case_control_cancer_ignore)
 #variable_list
 var_list = c("YRI_scale","ASN_scale","Former","Current","white_blood_cell_count",
              "monocyte_percentage","neutrophil_percentage",
@@ -56,12 +57,10 @@ med_var = data_com_new[,med_var_name,drop=F]
 colnames(med_var) = c("med_var")
 data_clean = cbind(data_com_new,med_var)
 
-
-
-
 #remove 13046 with missing white_blood_cell_count
+#dataset: 420222 controls, 407 cases
 data_clean = data_clean %>% filter(!is.na(white_blood_cell_count))
-
+table(data_clean$case_control_cancer_ignore)
 if(med_var_name%in%bin_var){
   if(med_var_name=="Former"){
     #set up the baseline value for other covariates
@@ -212,7 +211,8 @@ if(med_var_name%in%bin_var){
   }else{
     C = c(mean(data_clean$age), mean(data_clean$age2), mean(data_clean$YRI_scale),  
           mean(data_clean$ASN_scale), 0, 0, 0, mean(data_clean$white_blood_cell_count,na.rm = T))
-    
+    #remove missing data
+    data_clean = data_clean %>% filter(!is.na(med_var))
     result <- regmedint(data = data_clean,
                                 ## Variables
                                 yvar = "y",
