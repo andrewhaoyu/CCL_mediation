@@ -117,26 +117,8 @@ for(i in 1:1000){
   M = rbinom(n,1,P_M)
   P = probit(theta_1*A + theta_2*M + theta_c*C )
   Y = rbinom(n,1,P)
-  regmedint_obj1 <- regmedint(data = vv2015,
-                            ## Variables
-                            yvar = "y",
-                            avar = "x",
-                            mvar = "m",
-                            cvar = c("c"),
-                            eventvar = "event",
-                            ## Values at which effects are evaluated
-                            a0 = 0,
-                            a1 = 1,
-                            m_cde = 1,
-                            c_cond = 3,
-                            ## Model types
-                            mreg = "logistic",
-                            yreg = "survAFT_weibull",
-                            ## Additional specification
-                            interaction = TRUE,
-                            casecontrol = FALSE)
 
-summary(regmedint_obj1)
+
   data = data.frame(Y = Y, M = M, A = A, C = C)
   regmedint_obj1 <- regmedint(data = data,
                               ## Variables
