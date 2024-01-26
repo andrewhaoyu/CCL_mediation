@@ -32,9 +32,9 @@ set.seed(i2)
 SummarizeResult = function(result){
   sum_result = summary(result)
   coef = sum_result$summary_myreg
-  logNDE = coef[2,1]
-  logNIE = coef[3,1]
-  return(logNIE)
+  
+  pm = coef[7,1]
+  return(pm)
 }
 MediationFun <- function(data_com){
   data_com_control = data_com[data_com$case_control_cancer_control==0,]
@@ -253,10 +253,10 @@ for(k in 1:ind){
   
   #assign different PRS
   data_com$SCORESUM = data_com$prs1
-  lognie_1 = MediationFun(data_com)
+  pm_1 = MediationFun(data_com)
   data_com$SCORESUM = data_com$prs2
-  lognie_2 = MediationFun(data_com)
-  perm_diff = lognie_1-lognie_2
+  pm_2 = MediationFun(data_com)
+  perm_diff = pm_1-pm_2
   result_vec[k] = perm_diff
 }
 
